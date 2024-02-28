@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: kukatlavenkat/django:v3
+          env:
+            - name: MYSQL_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_USER
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: web-config
+                  key: MYSQL_DATABASE
+            - name: MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: web-config
+                  key: MYSQL_HOST
+          ports:
+            - containerPort: 8000
+          stdin: true
+          tty: true
+          command: ["/bin/bash", "-c", "/app/startup.sh"]
+
+      # Uncomment the following lines if you want to use persistent volume
+      # volumeMounts:
+      # - name: volumeweb
+      #   mountPath: /app
+      # volumes:
+      # - name: volumeweb
+      #   persistentVolumeClaim:
+      #     claimName: web-pvc

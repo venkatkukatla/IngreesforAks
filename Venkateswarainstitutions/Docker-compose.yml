@@ -1,0 +1,76 @@
+version: '3'
+
+services:
+  web:
+    image: kukatlavenkat/django:v2
+ #   build:
+ #      context: .
+ #      dockerfile: Dockerfile
+
+    depends_on:
+
+      db:
+        condition: service_healthy
+
+    container_name: web
+    ports:
+      - "8000:8000"
+    volumes:
+      - volumeweb:/app
+    
+    networks:
+      - user1
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: institute
+    # Other configuration for the web service
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    #command: ["/bin/bash"]
+    command: /bin/bash -c "/app/startup.sh"
+
+  db:
+    image: kukatlavenkat/mysql:v1
+    container_name: db
+    ports:
+      - "3306:3306"
+    volumes:
+      - volumedb:/var/lib/mysql
+    networks:
+      - user1
+          
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: institute
+      # Other MySQL environment variables
+    # Other configuration for the db service
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping" ,"-h" ,"localhost"]
+      #interval: 10s
+      timeout:  20s
+      retries: 10
+      #start_period: 30s
+
+networks:
+  user1:
+    driver: bridge
+    external: true
+
+volumes:
+  volumeweb:
+    #external: true
+    name: volumeweb
+
+  volumedb:
+    #external: true
+    name: volumedb
+
+
+
+# docker compose up -d
+
+# docker exec web python3 manage.py runserver 0.0.0.0:8000
+
+#docker compose up -d && docker exec web python3 manage.py runserver 0.0.0.0:8000

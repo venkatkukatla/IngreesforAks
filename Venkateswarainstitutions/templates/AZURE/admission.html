@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>admission report page</title>
+
+<body>
+
+<h1>My family memberes</h1>
+
+<table border="1">
+<tr>
+<th>id</th>
+<th>Student Name</th>
+<th>father name</th>
+<th>Contact</th>
+<tr>
+
+{% for s in allstudents %}
+<tr>
+<td>{{s.id}}</td>
+<td>{{s.name}}</td>
+<td>{{s.fathername}}</td>
+<td>{{s.contact}}</td>
+<tr>
+
+
+
+{% endfor %}
+
+<table>
+
+</body>
+
+</html>
