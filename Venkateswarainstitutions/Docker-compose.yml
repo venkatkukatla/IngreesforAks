@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    image: kukatlavenkat/django:v2
+    image: kukatlavenkat/django:v3
  #   build:
  #      context: .
  #      dockerfile: Dockerfile
@@ -24,6 +24,7 @@ services:
       MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: institute
+      MYSQL_HOST: db
     # Other configuration for the web service
     stdin_open: true
     tty: true
